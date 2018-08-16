@@ -1,0 +1,5 @@
+pyqrcode
+requests
+HTMLParser
+Pillow
+pypng

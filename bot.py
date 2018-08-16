@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from wxbot import *
-import ConfigParser
+import configparser as ConfigParser
 import json
 
 
@@ -19,30 +19,44 @@ class TulingWXBot(WXBot):
             self.tuling_key = cf.get('main', 'key')
         except Exception:
             pass
-        print 'tuling_key:', self.tuling_key
+        print('tuling_key:', self.tuling_key)
 
     def tuling_auto_reply(self, uid, msg):
         if self.tuling_key:
-            url = "http://www.tuling123.com/openapi/api"
+            url = "http://openapi.tuling123.com/openapi/api/v2"  # "http://www.tuling123.com/openapi/api"  #
             user_id = uid.replace('@', '')[:30]
-            body = {'key': self.tuling_key, 'info': msg.encode('utf8'), 'userid': user_id}
-            r = requests.post(url, data=body)
+            body = {
+                "reqType": 0,
+                "perception": {
+                    "inputText": {
+                        "text": msg
+                    }
+                },
+                "userInfo": {
+                    "apiKey": self.tuling_key,
+                    "userId": user_id
+                }
+            }
+            print(body)
+            r = requests.post(url, json=body)
             respond = json.loads(r.text)
+            print(respond)
             result = ''
-            if respond['code'] == 100000:
-                result = respond['text'].replace('<br>', '  ')
+            resp_code = respond['intent']['code']
+            if (resp_code <= 20000) and (resp_code >= 10000):
+                result = respond['results'][0]['values']['text']
                 result = result.replace(u'\xa0', u' ')
-            elif respond['code'] == 200000:
-                result = respond['url']
-            elif respond['code'] == 302000:
-                for k in respond['list']:
-                    result = result + u"【" + k['source'] + u"】 " +\
-                        k['article'] + "\t" + k['detailurl'] + "\n"
+            # elif respond['code'] == 200000:
+            #     result = respond['url']
+            # elif respond['code'] == 302000:
+            #     for k in respond['list']:
+            #         result = result + u"【" + k['source'] + u"】 " + \
+            #                  k['article'] + "\t" + k['detailurl'] + "\n"
             else:
                 result = respond['text'].replace('<br>', '  ')
                 result = result.replace(u'\xa0', u' ')
 
-            print '    ROBOT:', result
+            print('    ROBOT:', result)
             return result
         else:
             return u"知道啦"
@@ -72,6 +86,7 @@ class TulingWXBot(WXBot):
         elif msg['msg_type_id'] == 3 and msg['content']['type'] == 0:  # group text message
             if 'detail' in msg['content']:
                 my_names = self.get_group_member_name(msg['user']['id'], self.my_account['UserName'])
+                print(self.my_account)
                 if my_names is None:
                     my_names = {}
                 if 'NickName' in self.my_account and self.my_account['NickName']:
@@ -92,18 +107,21 @@ class TulingWXBot(WXBot):
                     if msg['content']['type'] == 0:  # text message
                         reply += self.tuling_auto_reply(msg['content']['user']['id'], msg['content']['desc'])
                     else:
-                        reply += u"对不起，只认字，其他杂七杂八的我都不认识，,,Ծ‸Ծ,,"
+                        reply += "对不起，只认字，其他杂七杂八的我都不认识，,,Ծ‸Ծ,,"
                     self.send_msg_by_uid(reply, msg['user']['id'])
 
 
 def main():
     bot = TulingWXBot()
     bot.DEBUG = True
-    bot.conf['qr'] = 'png'
+    online(bot)
+    # bot.tuling_auto_reply('@43bb007c65c4ede427f92b3662c0ae71', '这都不是你在哪')
 
+
+def online(bot):
+    bot.conf['qr'] = 'png'
     bot.run()
 
 
 if __name__ == '__main__':
     main()
-
