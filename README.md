@@ -1,6 +1,10 @@
-# wxJBot [![star this repo](http://github-svg-buttons.herokuapp.com/star.svg?user=liuwons&repo=wxBot&style=flat&background=1081C1)](http://github.com/liuwons/wxBot) [![fork this repo](http://github-svg-buttons.herokuapp.com/fork.svg?user=liuwons&repo=wxBot&style=flat&background=1081C1)](http://github.com/liuwons/wxBot/fork) ![python](https://img.shields.io/badge/python-2.7-ff69b4.svg)
+# wxJBot
 
-**关于wxJBot的说明
+[![star this repo](http://githubbadges.com/star.svg?user=wangzhe&repo=wxJBot&style=default)](https://github.com/wangzhe/wxJBot)
+[![fork this repo](http://githubbadges.com/fork.svg?user=wangzhe&repo=wxJBot&style=default)](https://github.com/wangzhe/wxJBot/fork)
+![python](https://img.shields.io/badge/python-3.6-ff69b4.svg)
+
+## 关于wxJBot的说明
 
 本段代码fork自liuwons/wxBot的代码源的学习。过程中发现源代码是在Python2上写作的，对于Python3有很多的不支持和错误。本代码库以此为基础进行升级。感谢原著作者。
 
